@@ -1,4 +1,12 @@
+:host {
+    flex: 1;
+    margin-right: 1px;
+    background-color: #ccc;
+}
+:host:last-child {
+    margin-right: 0;
+}
 .element-wrapper {
-    /* background-color: blue; */
+    text-align: center;
     border: 1px red solid;
 }

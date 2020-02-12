@@ -7,5 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'sorting-algorithms';
-  arrayToSort = [11, -2, 3];
 }
