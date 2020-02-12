@@ -7,14 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArrayToBeSortedComponent implements OnInit {
 
-  arrayToSort = [11, -2, 3];
+  arrayToSort: number[];
 
   constructor() { }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.arrayToSort.sort((x, y) => x - y );
-    }, 2000);
+    this.fillArrayWithRandomValues(100);
+    // setTimeout(() => {
+    //   this.arrayToSort.sort((x, y) => x - y );
+    // }, 2000);
+  }
+
+  fillArrayWithRandomValues(length: number) {
+    this.arrayToSort = [];
+    for (let i = 0; i < length; i++) {
+      this.arrayToSort.push(Math.random() * 100);
+    }
   }
 
 }
