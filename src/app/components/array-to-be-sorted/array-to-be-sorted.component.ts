@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SortingService } from 'src/app/services/sorting.service';
 
 @Component({
   selector: 'array-to-be-sorted',
@@ -9,13 +10,11 @@ export class ArrayToBeSortedComponent implements OnInit {
 
   arrayToSort: number[];
 
-  constructor() { }
+  constructor(private sortingService: SortingService) { }
 
   ngOnInit(): void {
     this.fillArrayWithRandomValues(100);
-    // setTimeout(() => {
-    //   this.arrayToSort.sort((x, y) => x - y );
-    // }, 2000);
+    this.sortingService.sort(this.arrayToSort, (x, y) => x - y);
   }
 
   fillArrayWithRandomValues(length: number) {
