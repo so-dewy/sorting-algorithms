@@ -1,12 +1,9 @@
 :host {
     flex: 1;
-    margin-right: 1px;
+    /* margin-right: 1px; */
     background-color: #ccc;
+    border: 1px red solid;
 }
 :host:last-child {
     margin-right: 0;
-}
-.element-wrapper {
-    text-align: center;
-    border: 1px red solid;
 }

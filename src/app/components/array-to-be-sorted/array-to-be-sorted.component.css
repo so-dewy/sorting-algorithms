@@ -7,6 +7,10 @@
     height: 500px;
     width: 70%;
     margin: 0 auto;
-    padding: 0 1px;
+    /* padding: 0 1px; */
     border: 1px blue solid;
+}
+
+.array-element {
+    height: 50%;
 }
