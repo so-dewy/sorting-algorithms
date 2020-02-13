@@ -1,16 +1,32 @@
 import { ISortingStrategy } from '../models/ISortingStrategy';
 
 export class BubbleSort implements ISortingStrategy{
-    sort(array: number[], compareFn?: (a: number, b: number) => number): void {
-        let buffer: number;
-        for (let i = 0; i < array.length - 1; i++) {
-          for (let j = i + 1; j < array.length; j++) {
-            if (compareFn(array[i], array[j]) > 0) {
-                buffer = array[i];
-                array[i] = array[j];
-                array[j] = buffer;
-            }
-          }
+  constructor() {
+  }
+  // async sort(array: number[], compareFn?: (a: number, b: number) => number) {
+  //   const generator = this._sort(array, compareFn);
+    
+  //   for await (let value of generator) { 
+  //     console.log(value); 
+  //   }
+  // }
+  
+  async *sort(array: number[],
+     compareFn?: (a: number, b: number) => number) {  
+    compareFn = compareFn ? compareFn : (a, b) => a - b;
+    let buffer: number;
+    let length = array.length;
+    for (let i = 0; i < length - 1; i++) {
+        for (let j = 0; j < length - i - 1; j++) {  
+          await new Promise(resolve => setTimeout(resolve, 100));
+        if (compareFn(array[j], array[j + 1]) > 0) {
+          buffer = array[j];
+          array[j] = array[j + 1];
+          array[j + 1] = buffer;       
         }
+        yield [j, j + 1];     
+      }
     }
+    return;
+  }
 }

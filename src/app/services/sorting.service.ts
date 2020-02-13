@@ -18,7 +18,11 @@ export class SortingService {
   constructor() { }
   
 
-  sort(array: number[], compareFn?: (a: number, b: number) => number) {
-    this.sortingStrategy.sort(array, compareFn);
+  async *sort(array: number[], compareFn?: (a: number, b: number) => number) {
+    const generator = this.sortingStrategy.sort(array, compareFn);
+    
+    for await (let value of generator) { 
+      yield value;
+    }
   }
 }

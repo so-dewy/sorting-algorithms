@@ -9,12 +9,25 @@ import { SortingService } from 'src/app/services/sorting.service';
 export class ArrayToBeSortedComponent implements OnInit {
 
   arrayToSort: number[];
+  indexesToHighlight: number[];
 
   constructor(private sortingService: SortingService) { }
 
   ngOnInit(): void {
-    this.fillArrayWithRandomValues(100);
-    this.sortingService.sort(this.arrayToSort, (x, y) => x - y);
+    this.fillArrayWithRandomValues(10);
+    this.sort();
+  }
+
+  shouldBeHighlighted(element: number): boolean {
+    return this.indexesToHighlight && this.indexesToHighlight.find(el => el == element) != undefined;
+  }
+
+  async sort() {
+    const generator = this.sortingService.sort(this.arrayToSort, (x, y) => x - y);
+    for await (let value of generator) { 
+      this.indexesToHighlight = value; 
+    }
+    this.indexesToHighlight = null;
   }
 
   fillArrayWithRandomValues(length: number) {

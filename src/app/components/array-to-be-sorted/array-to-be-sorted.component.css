@@ -9,3 +9,7 @@
     margin: 0 auto;
     /* border: 2px blue solid; */
 }
+
+.highlight-element {
+    background-color: red;
+}

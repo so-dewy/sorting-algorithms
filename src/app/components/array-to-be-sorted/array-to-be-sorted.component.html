@@ -1,5 +1,7 @@
 <div class="array-wrapper">
-    <element-of-array *ngFor="let element of arrayToSort" [elementValue]="element" 
-    [style.height.%]="element">
+    <element-of-array *ngFor="let element of arrayToSort; let i = index" [elementValue]="element" 
+    [style.height.%]="element" 
+    [ngClass]="{ 'highlight-element': shouldBeHighlighted(i) }"
+    >
     </element-of-array>
 </div>
