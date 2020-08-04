@@ -4,8 +4,7 @@ export class BubbleSort implements ISortingStrategy {
   constructor() {
   }
 
-  async *sort(array: number[],
-    compareFn?: (a: number, b: number) => number) {  
+  async *sort(array: number[], compareFn?: (a: number, b: number) => number) {  
     compareFn = compareFn ? compareFn : (a, b) => a - b;
     let buffer: number;
     let length = array.length;
