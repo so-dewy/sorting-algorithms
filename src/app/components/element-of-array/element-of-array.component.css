@@ -1,6 +1,5 @@
 :host {
     flex: 1;
-    /* margin-right: 1px; */
     background-color: #ccc;
     border: 1px red solid;
 }

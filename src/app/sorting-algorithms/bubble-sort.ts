@@ -1,16 +1,9 @@
 import { ISortingStrategy } from '../models/ISortingStrategy';
 
-export class BubbleSort implements ISortingStrategy{
+export class BubbleSort implements ISortingStrategy {
   constructor() {
   }
-  // async sort(array: number[], compareFn?: (a: number, b: number) => number) {
-  //   const generator = this._sort(array, compareFn);
-    
-  //   for await (let value of generator) { 
-  //     console.log(value); 
-  //   }
-  // }
-  
+
   async *sort(array: number[],
     compareFn?: (a: number, b: number) => number) {  
     compareFn = compareFn ? compareFn : (a, b) => a - b;
