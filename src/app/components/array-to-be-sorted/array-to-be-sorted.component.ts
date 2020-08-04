@@ -14,7 +14,7 @@ export class ArrayToBeSortedComponent implements OnInit {
   constructor(private sortingService: SortingService) { }
 
   ngOnInit(): void {
-    this.fillArrayWithRandomValues(10);
+    this.fillArrayWithRandomValues(50);
     this.sort();
   }
 
