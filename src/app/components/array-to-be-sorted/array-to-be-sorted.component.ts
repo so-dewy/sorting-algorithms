@@ -17,8 +17,8 @@ export class ArrayToBeSortedComponent implements OnInit {
   ngOnInit(): void {
     this.fillArrayWithRandomValues(50);
     this.sortingService.sortingStrategy = new SelectionSort();
-    this.sortingService.sortingStrategy.delay = 500;
-    this.sort();
+    this.sortingService.sortingStrategy.delay = 100;
+    // this.sort();
   }
 
   shouldBeHighlighted(element: number): boolean {

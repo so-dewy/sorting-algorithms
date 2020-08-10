@@ -2,6 +2,8 @@ import { ISortingStrategy } from '../models/ISortingStrategy';
 import { defaultCompareFn } from '../utils/util-functions';
 
 export class SelectionSort implements ISortingStrategy  {  
+  displayName: string;
+
   private _delay: number = 100;
 
   get delay() {
@@ -13,6 +15,7 @@ export class SelectionSort implements ISortingStrategy  {
   }
   
   constructor() {
+    this.displayName = "Selection sort";
   }
 
   async *sort(array: any[], compareFn?: (a: any, b: any) => any) {  
