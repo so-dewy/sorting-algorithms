@@ -12,6 +12,7 @@ export class AppComponent implements OnDestroy {
   @ViewChild(ArrayToBeSortedComponent, { static: false }) arrayComponent: ArrayToBeSortedComponent;
   title = 'sorting-algorithms';
   currentSortingStrategy: string;
+  sortingInProgress: boolean = false;
   
   subscriptions: Subscription[];
   constructor(private sortingService: SortingService) { 
@@ -21,8 +22,13 @@ export class AppComponent implements OnDestroy {
     }));
   }
 
-  sort() {
-    this.arrayComponent.sort();
+  async sort() {
+    if (this.sortingInProgress) {
+      return;
+    }
+    this.sortingInProgress = true;
+    await this.arrayComponent.sort();
+    this.sortingInProgress = false;
   }
 
   ngOnDestroy() {

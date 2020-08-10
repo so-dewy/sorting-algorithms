@@ -3,4 +3,4 @@
 </div>
 <array-to-be-sorted></array-to-be-sorted>
 <router-outlet></router-outlet>
-<button (click)=sort()>Sort</button>
+<button (click)=sort() [disabled]="sortingInProgress">Sort</button>
