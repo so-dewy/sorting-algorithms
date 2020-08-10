@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SortingService } from 'src/app/services/sorting.service';
+import { SelectionSort } from 'src/app/sorting-algorithms/selection-sort';
 
 @Component({
   selector: 'array-to-be-sorted',
@@ -15,6 +16,8 @@ export class ArrayToBeSortedComponent implements OnInit {
 
   ngOnInit(): void {
     this.fillArrayWithRandomValues(50);
+    this.sortingService.sortingStrategy = new SelectionSort();
+    this.sortingService.sortingStrategy.delay = 500;
     this.sort();
   }
 

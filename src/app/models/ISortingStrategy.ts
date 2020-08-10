@@ -1,3 +1,4 @@
 export interface ISortingStrategy {
-    sort(array: number[], compareFn?: (a: number, b: number) => number): AsyncGenerator<number[], void, unknown>
+    delay: number;
+    sort(array: any[], compareFn?: (a: any, b: any) => any): AsyncGenerator<any[], void, unknown>
 }
