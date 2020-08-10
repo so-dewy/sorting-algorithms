@@ -14,7 +14,7 @@ export class SortingService {
   }
   
   set sortingStrategy(value: ISortingStrategy) {
-    this.sortingStrategy = value;
+    this._sortingStrategy = value;
   }
 
   constructor() { }
