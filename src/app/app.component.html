@@ -1,5 +1,8 @@
 <div>
-  Current sorting strategy: {{currentSortingStrategy}}
+  <label for="sorting-strategies">Current sorting algorithm:</label>
+  <select id="sorting-strategies" [(ngModel)]="currentSortingStrategy">
+      <option *ngFor="let sortingStrategy of sortingStrategies" [ngValue]="sortingStrategy">{{sortingStrategy.displayName}}</option>
+  </select>
 </div>
 <array-to-be-sorted></array-to-be-sorted>
 <router-outlet></router-outlet>
