@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationHeaderComponent } from './components/navigation-header/navigation-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SortingVisualisationComponent } from './components/sorting/sorting-visualisation/sorting-visualisation.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { SortingVisualisationComponent } from './components/sorting/sorting-visu
     FormsModule,
     AppRoutingModule,
     MatToolbarModule,
+    MatButtonModule,
     BrowserAnimationsModule
   ],
   providers: [],
