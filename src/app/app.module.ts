@@ -9,13 +9,15 @@ import { ArrayToBeSortedComponent } from './components/array-to-be-sorted/array-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationHeaderComponent } from './components/navigation-header/navigation-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { SortingVisualisationComponent } from './components/sorting-visualisation/sorting-visualisation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ElementOfArrayComponent,
     ArrayToBeSortedComponent,
-    NavigationHeaderComponent
+    NavigationHeaderComponent,
+    SortingVisualisationComponent
   ],
   imports: [
     BrowserModule,
