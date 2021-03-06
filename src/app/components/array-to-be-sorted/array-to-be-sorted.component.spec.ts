@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ArrayToBeSortedComponent } from './array-to-be-sorted.component';
 
@@ -6,7 +6,7 @@ describe('ArrayToBeSortedComponent', () => {
   let component: ArrayToBeSortedComponent;
   let fixture: ComponentFixture<ArrayToBeSortedComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ArrayToBeSortedComponent ]
     })
