@@ -11,6 +11,7 @@ import { NavigationHeaderComponent } from './components/navigation-header/naviga
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SortingVisualisationComponent } from './components/sorting/sorting-visualisation/sorting-visualisation.component';
 import { MatButtonModule } from '@angular/material/button';
+import { CanvasComponent } from './components/canvas-graphics/canvas/canvas.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
     ElementOfArrayComponent,
     ArrayToBeSortedComponent,
     NavigationHeaderComponent,
-    SortingVisualisationComponent
+    SortingVisualisationComponent,
+    CanvasComponent
   ],
   imports: [
     BrowserModule,
