@@ -7,17 +7,21 @@ import { AppComponent } from './app.component';
 import { ElementOfArrayComponent } from './components/element-of-array/element-of-array.component';
 import { ArrayToBeSortedComponent } from './components/array-to-be-sorted/array-to-be-sorted.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavigationHeaderComponent } from './components/navigation-header/navigation-header.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
     AppComponent,
     ElementOfArrayComponent,
-    ArrayToBeSortedComponent
+    ArrayToBeSortedComponent,
+    NavigationHeaderComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    MatToolbarModule,
     BrowserAnimationsModule
   ],
   providers: [],
