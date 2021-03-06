@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SortingService } from '../../services/sorting.service';
+import { SortingService } from '../../../services/sorting.service';
 import { Subscription } from 'rxjs';
 import { ArrayToBeSortedComponent } from '../array-to-be-sorted/array-to-be-sorted.component';
-import { ISortingStrategy } from '../../models/ISortingStrategy';
-import { BubbleSort } from '../../sorting-algorithms/bubble-sort';
-import { SelectionSort } from '../../sorting-algorithms/selection-sort';
+import { ISortingStrategy } from '../../../models/ISortingStrategy';
+import { BubbleSort } from '../../../sorting-algorithms/bubble-sort';
+import { SelectionSort } from '../../../sorting-algorithms/selection-sort';
 
 @Component({
   selector: 'app-sorting-visualisation',
