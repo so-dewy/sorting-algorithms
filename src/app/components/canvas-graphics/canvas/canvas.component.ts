@@ -73,7 +73,8 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   drawPixel(x: number, y: number, pixelColor: [number, number, number]) {
     const screenX = x - this.canvasWidth / 2;
     const screenY = this.canvasWidth / 2 - y;
-    var offset = 4 * (screenX + screenY * this.imageData.width);
+
+    const offset = 4 * (screenX + screenY * this.imageData.width);
   
     this.imageData.data[offset] = pixelColor[0];
     this.imageData.data[offset + 1] = pixelColor[1];
