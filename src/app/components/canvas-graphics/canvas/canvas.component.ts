@@ -1,5 +1,6 @@
 import { Component, ElementRef, AfterViewInit, ViewChild, OnInit } from '@angular/core';
 import { ISphere } from 'src/app/models/ISphere';
+import { Scene } from 'src/app/models/Scene';
 
 @Component({
   selector: 'app-canvas',
@@ -11,11 +12,11 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   private ctx: CanvasRenderingContext2D;
   canvasWidth: number;
   canvasHeight: number;
-  viewportWidth: number;
-  viewportHeight: number;
-  canvasToViewportDistance: number = 1;
-  BACKGROUND_COLOR: [number, number, number];
-  scene: { spheres: ISphere[] } = {
+  scene: Scene = {
+    canvasToViewportDistance: 1,
+    backgroundColor: [255, 255, 255],
+    viewportHeight: 1,
+    viewportWidth: 1,
     spheres: [
       {
         center: [0, -1, 3],
@@ -39,7 +40,6 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.BACKGROUND_COLOR = [255, 255, 255];
   }
 
   ngAfterViewInit() {
@@ -47,8 +47,6 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
     this.canvasWidth = this.canvas.nativeElement.width;
     this.canvasHeight = this.canvas.nativeElement.height;
-    this.viewportWidth = 1;
-    this.viewportHeight = 1;
 
     this.imageData = this.ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
 
@@ -85,9 +83,9 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
   calculateViewportPosition(x: number, y: number): number[] {
     return [
-      (x * this.viewportWidth) / this.canvasWidth, 
-      (y * this.viewportHeight) / this.canvasHeight,
-      this.canvasToViewportDistance
+      (x * this.scene.viewportWidth) / this.canvasWidth, 
+      (y * this.scene.viewportHeight) / this.canvasHeight,
+      this.scene.canvasToViewportDistance
     ];
   }
 
@@ -108,7 +106,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         closesetSphere = sphere;
       }
     }
-    return closesetSphere ? closesetSphere.color : this.BACKGROUND_COLOR;
+    return closesetSphere ? closesetSphere.color : this.scene.backgroundColor;
   }
 
   calculateIntersections(cameraPosition: number[], viewportPosition: number[], sphere: any): [number, number] {
