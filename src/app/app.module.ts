@@ -12,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { SortingVisualisationComponent } from './components/sorting/sorting-visualisation/sorting-visualisation.component';
 import { MatButtonModule } from '@angular/material/button';
 import { CanvasComponent } from './components/canvas-graphics/canvas/canvas.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { CanvasComponent } from './components/canvas-graphics/canvas/canvas.comp
     AppRoutingModule,
     MatToolbarModule,
     MatButtonModule,
+    MatSelectModule,
     BrowserAnimationsModule
   ],
   providers: [],

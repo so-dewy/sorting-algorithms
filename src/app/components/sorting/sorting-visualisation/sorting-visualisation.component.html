@@ -1,10 +1,10 @@
-<div>
-  <label for="sorting-strategies">Current sorting algorithm:</label>
-  <select id="sorting-strategies" [(ngModel)]="currentSortingStrategy">
-      <option *ngFor="let sortingStrategy of sortingStrategies" [ngValue]="sortingStrategy">{{sortingStrategy.displayName}}</option>
-  </select>
-</div>
+<mat-form-field >
+  <mat-label>Current sorting algorithm:</mat-label>
+  <mat-select [(value)]="currentSortingStrategy">
+    <mat-option *ngFor="let sortingStrategy of sortingStrategies" [value]="sortingStrategy">{{sortingStrategy.displayName}}</mat-option>
+  </mat-select>
+</mat-form-field>
 
 <array-to-be-sorted></array-to-be-sorted>
 
-<button (click)=sort() [disabled]="sortingInProgress">Sort</button>
+<button mat-raised-button (click)=sort() [disabled]="sortingInProgress">Sort</button>
