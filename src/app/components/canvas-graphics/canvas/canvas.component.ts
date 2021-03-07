@@ -1,5 +1,5 @@
 import { Component, ElementRef, AfterViewInit, ViewChild, OnInit } from '@angular/core';
-import { ISphere } from 'src/app/models/ISphere';
+import { Sphere } from 'src/app/models/Sphere';
 import { Scene } from 'src/app/models/Scene';
 
 @Component({
