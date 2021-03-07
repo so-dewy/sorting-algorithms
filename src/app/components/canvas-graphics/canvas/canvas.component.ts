@@ -1,4 +1,5 @@
 import { Component, ElementRef, AfterViewInit, ViewChild, OnInit } from '@angular/core';
+import { ISphere } from 'src/app/models/ISphere';
 
 @Component({
   selector: 'app-canvas',
@@ -13,31 +14,32 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   viewportWidth: number;
   viewportHeight: number;
   canvasToViewportDistance: number = 1;
-  BACKGROUND_COLOR: string = 'white';
-  scene = {
+  BACKGROUND_COLOR: [number, number, number];
+  scene: { spheres: ISphere[] } = {
     spheres: [
       {
         center: [0, -1, 3],
         radius: 1,
-        color: 'red'
+        color: [255, 0, 0]
       },
       {
         center: [2, 0, 4],
         radius: 1,
-        color: 'blue'
+        color: [0, 0, 255]
       },
       {
         center: [-2, 0, 4],
         radius: 1,
-        color: 'green'
+        color: [0, 255, 0]
       }
     ]
   };
+  imageData: ImageData;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.BACKGROUND_COLOR = 'white';
+    this.BACKGROUND_COLOR = [255, 255, 255];
   }
 
   ngAfterViewInit() {
@@ -45,43 +47,52 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
     this.canvasWidth = this.canvas.nativeElement.width;
     this.canvasHeight = this.canvas.nativeElement.height;
-    this.viewportWidth = 600;
-    this.viewportHeight = 600;
+    this.viewportWidth = 1;
+    this.viewportHeight = 1;
 
-    const centeredX = this.canvasWidth / 2;
-    const centeredY = this.canvasHeight / 2;
-    this.ctx.translate(centeredX, centeredY);
+    this.imageData = this.ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
 
     this.drawScene();
   }
 
   drawScene() {
     const cameraPosition = [0, 0, 0];
-    const rightBorder = this.canvas.nativeElement.width / 2;
+    const rightBorder = this.canvasWidth / 2;
     const leftBorder = -rightBorder;
-    const topBorder = this.canvas.nativeElement.height / 2;
+    const topBorder = this.canvasHeight / 2;
     const bottomBorder = -topBorder;
     for (let x = leftBorder; x <= rightBorder; x++) {
       for (let y = bottomBorder; y <= topBorder; y++) {
         const viewportPosition = this.calculateViewportPosition(x, y);
-        const pixelColor = this.traceRay(cameraPosition, viewportPosition, 1, Number.POSITIVE_INFINITY);
+        const pixelColor = this.traceRay(cameraPosition, viewportPosition, 1, Infinity);
 
-        this.ctx.fillStyle = pixelColor;
-        this.ctx.fillRect(x, y, 1, 1);
+        this.drawPixel(x, y, pixelColor);
       }
     }
+    this.ctx.putImageData(this.imageData, 0, 0);
+  }
+
+  drawPixel(x: number, y: number, pixelColor: [number, number, number]) {
+    const screenX = x - this.canvasWidth / 2;
+    const screenY = this.canvasWidth / 2 - y;
+    var offset = 4 * (screenX + screenY * this.imageData.width);
+  
+    this.imageData.data[offset] = pixelColor[0];
+    this.imageData.data[offset + 1] = pixelColor[1];
+    this.imageData.data[offset + 2] = pixelColor[2];
+    this.imageData.data[offset + 3] = 255;
   }
 
   calculateViewportPosition(x: number, y: number): number[] {
     return [
       (x * this.viewportWidth) / this.canvasWidth, 
-      (y * this.viewportHeight) / this.viewportHeight,
+      (y * this.viewportHeight) / this.canvasHeight,
       this.canvasToViewportDistance
     ];
   }
 
-  traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number): string {
-    let closesetIntersection = Number.POSITIVE_INFINITY;
+  traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number): [number, number, number] {
+    let closesetIntersection = Infinity;
     let closesetSphere = null;
 
     for (const sphere of this.scene.spheres) {
@@ -113,7 +124,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
     const discriminant = b * b - 4 * a *c;
     if (discriminant < 0) {
-      return [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY];
+      return [Infinity, Infinity];
     }
 
     const intersection1 = (-b + Math.sqrt(discriminant)) / (2 * a);
