@@ -24,31 +24,37 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       {
         center: [0, -1, 3],
         radius: 1,
+        shininess: 500, // shiny
         color: [255, 0, 0]
       },
       {
         center: [0, 0.5, 1.5],
         radius: 0.2,
+        shininess: 500, // shiny
         color: [0, 50, 255]
       },
       {
         center: [0, 0.2, 1.5],
         radius: 0.2,
+        shininess: 500, // shiny
         color: [0, 50, 255]
       },
       {
         center: [2, 0, 4],
         radius: 1,
+        shininess: 500, // shiny
         color: [0, 0, 255]
       },
       {
         center: [-2, 0, 4],
         radius: 1,
+        shininess: 10, // somewhat shiny
         color: [0, 255, 0]
       },
       {
         center: [0, -5001, 0],
         radius: 5000,
+        shininess: 1000, // very shiny
         color: [255, 255, 0]
       }
     ],
@@ -115,7 +121,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
   traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number): [number, number, number] {
     let closesetIntersection = Infinity;
-    let closesetSphere = null;
+    let closesetSphere: Sphere = null;
 
     for (const sphere of this.scene.spheres) {
       const [intersection1, intersection2] = this.calculateIntersections(cameraPosition, viewportPosition, sphere);
@@ -142,12 +148,12 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
     const sphereNormal = sphereNormalDirection.map(el => el / sphereNormalDirectionLength);
 
-    const lightingCoefficient = this.computeLighting(closesetIntersectionPoint, sphereNormal);
+    const lightingCoefficient = this.computeLighting(closesetIntersectionPoint, sphereNormal, viewportPosition.map(el => -el), closesetSphere.shininess);
 
-    return closesetSphere.color.map(el => el * lightingCoefficient);
+    return closesetSphere.color.map(el => el * lightingCoefficient) as [number, number, number];
   }
 
-  computeLighting(point: number[], normal: number[]): number {
+  computeLighting(point: number[], normal: number[], cameraToObjectVector: number[], shininess: number): number {
     let lightIntensity = 0;
     let lightVector: [number, number, number];
 
@@ -160,10 +166,18 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         } else if (light instanceof DirectionalLight) {
           lightVector = light.direction;
         }
-        const product = this.vectorDotProduct(normal, lightVector);
+        const productNL = this.vectorDotProduct(normal, lightVector);
 
-        if (product > 0) {
-          lightIntensity += light.intensity * product / (this.vectorLength(normal) * this.vectorLength(lightVector));
+        if (productNL > 0) {
+          lightIntensity += light.intensity * productNL / (this.vectorLength(normal) * this.vectorLength(lightVector));
+        }
+
+        if (shininess != -1) {
+          const reflectionVector = this.vectorSubtraction(normal.map(el => 2 * productNL * el), lightVector);
+          const product = this.vectorDotProduct(reflectionVector, cameraToObjectVector);
+          if (product > 0) {
+            lightIntensity += light.intensity * Math.pow(product / (this.vectorLength(reflectionVector) * this.vectorLength(cameraToObjectVector)), shininess);
+          }
         }
       }
     }
