@@ -1,3 +1,4 @@
+import { Light } from "./lights/Light";
 import { Sphere } from "./Sphere";
 
 export interface Scene {
@@ -5,5 +6,6 @@ export interface Scene {
   canvasToViewportDistance: number,
   viewportWidth: number,
   viewportHeight: number,
-  spheres: Sphere[]
+  spheres: Sphere[],
+  lights: Light[]
 }

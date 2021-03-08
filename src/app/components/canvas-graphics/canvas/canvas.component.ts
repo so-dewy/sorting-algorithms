@@ -1,6 +1,9 @@
 import { Component, ElementRef, AfterViewInit, ViewChild, OnInit } from '@angular/core';
 import { Sphere } from 'src/app/models/Sphere';
 import { Scene } from 'src/app/models/Scene';
+import { AmbientLight } from 'src/app/models/lights/AmbientLight';
+import { PointLight } from 'src/app/models/lights/PointLight';
+import { DirectionalLight } from 'src/app/models/lights/DirectionalLight';
 
 @Component({
   selector: 'app-canvas',
@@ -32,7 +35,17 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         center: [-2, 0, 4],
         radius: 1,
         color: [0, 255, 0]
+      },
+      {
+        center: [0, -5001, 0],
+        radius: 5000,
+        color: [255, 255, 0]
       }
+    ],
+    lights: [
+      new AmbientLight(0.2),
+      new PointLight(0.6, [2, 1, 0]),
+      new DirectionalLight(0.2, [1, 4, 4]),
     ]
   };
   imageData: ImageData;
@@ -107,7 +120,45 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         closesetSphere = sphere;
       }
     }
-    return closesetSphere ? closesetSphere.color : this.scene.backgroundColor;
+    if (!closesetSphere) {
+      return this.scene.backgroundColor;
+    }
+
+    const closesetIntersectionPoint = this.vectorSum(cameraPosition, viewportPosition.map(el => el * closesetIntersection));
+
+    const sphereNormalDirection = this.vectorSubtraction(closesetIntersectionPoint, closesetSphere.center);
+
+    const sphereNormalDirectionLength = this.vectorLength(sphereNormalDirection);
+
+    const sphereNormal = sphereNormalDirection.map(el => el / sphereNormalDirectionLength);
+
+    const lightingCoefficient = this.computeLighting(closesetIntersectionPoint, sphereNormal);
+
+    return closesetSphere.color.map(el => el * lightingCoefficient);
+  }
+
+  computeLighting(point: number[], normal: number[]): number {
+    let lightIntensity = 0;
+    let lightVector: [number, number, number];
+
+    for (const light of this.scene.lights) {
+      if (light instanceof AmbientLight) {
+        lightIntensity += light.intensity;
+      } else {
+        if (light instanceof PointLight) {
+          lightVector = this.vectorSubtraction(light.position, point);
+        } else if (light instanceof DirectionalLight) {
+          lightVector = light.direction;
+        }
+        const product = this.vectorDotProduct(normal, lightVector);
+
+        if (product > 0) {
+          lightIntensity += light.intensity * product / (this.vectorLength(normal) * this.vectorLength(lightVector));
+        }
+      }
+    }
+
+    return lightIntensity;
   }
 
   calculateIntersections(cameraPosition: number[], viewportPosition: number[], sphere: any): [number, number] {
@@ -131,8 +182,20 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     return [intersection1, intersection2];
   }
 
+  vectorSum(vector1: number[], vector2: number[]): number[] {
+    return [vector1[0] + vector2[0], vector1[1] + vector2[1], vector1[2] + vector2[2]];
+  }
+
+  vectorSubtraction(vector1: number[], vector2: number[]): [number, number, number] {
+    return [vector1[0] - vector2[0], vector1[1] - vector2[1], vector1[2] - vector2[2]];
+  }
+
   vectorDotProduct(vector1: number[], vector2: number[]): number {
     return vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2];
+  }
+
+  vectorLength(vector: number[]) {
+    return Math.sqrt(this.vectorDotProduct(vector, vector));
   }
 
 }
