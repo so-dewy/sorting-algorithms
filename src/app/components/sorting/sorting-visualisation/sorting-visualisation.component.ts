@@ -5,6 +5,7 @@ import { ArrayToBeSortedComponent } from '../array-to-be-sorted/array-to-be-sort
 import { ISortingStrategy } from '../../../models/ISortingStrategy';
 import { BubbleSort } from '../../../sorting-algorithms/bubble-sort';
 import { SelectionSort } from '../../../sorting-algorithms/selection-sort';
+import { HeapSort } from 'src/app/sorting-algorithms/HeapSort';
 
 @Component({
   selector: 'app-sorting-visualisation',
@@ -24,7 +25,7 @@ export class SortingVisualisationComponent implements OnInit {
     this.sortingService.sortingStrategy = sortingStrategy;
   }
 
-  sortingStrategies: ISortingStrategy[] = [new BubbleSort(), new SelectionSort()];
+  sortingStrategies: ISortingStrategy[] = [new BubbleSort(), new SelectionSort(),new HeapSort(), ];
 
   sortingInProgress: boolean = false;
   
