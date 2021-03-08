@@ -91,20 +91,33 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   }
 
   drawScene() {
-    const cameraPosition = [0, 0, 0];
+    const cameraRotation = [
+      [0.7071, 0, -0.7071],
+      [0, 1, 0],
+      [0.7071, 0,  0.7071]
+    ];
+    const cameraPosition = [3, 0, 1];
     const rightBorder = this.canvasWidth / 2;
     const leftBorder = -rightBorder;
     const topBorder = this.canvasHeight / 2;
     const bottomBorder = -topBorder;
     for (let x = leftBorder; x <= rightBorder; x++) {
       for (let y = bottomBorder; y <= topBorder; y++) {
-        const viewportPosition = this.calculateViewportPosition(x, y);
+        const viewportPosition = this.multiplyMV(cameraRotation, this.calculateViewportPosition(x, y));
         const pixelColor = this.traceRay(cameraPosition, viewportPosition, 1, Infinity, this.recursionDepth);
 
         this.drawPixel(x, y, pixelColor);
       }
     }
     this.ctx.putImageData(this.imageData, 0, 0);
+  }
+
+  multiplyMV(matrix: number[][], vector: number[]) {
+    return [
+      matrix[0][0] * vector[0] + matrix[0][1] * vector[1] + matrix[0][2] * vector[2],
+      matrix[1][0] * vector[0] + matrix[1][1] * vector[1] + matrix[1][2] * vector[2],
+      matrix[2][0] * vector[0] + matrix[2][1] * vector[1] + matrix[2][2] * vector[2],
+  ];
   }
 
   drawPixel(x: number, y: number, pixelColor: [number, number, number]) {
