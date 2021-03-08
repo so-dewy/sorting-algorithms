@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SortingService } from 'src/app/services/sorting.service';
-import { SelectionSort } from 'src/app/sorting-algorithms/selection-sort';
+import { SelectionSort } from 'src/app/sorting-algorithms/SelectionSort';
 
 @Component({
   selector: 'array-to-be-sorted',

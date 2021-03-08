@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ISortingStrategy } from '../models/ISortingStrategy';
-import { BubbleSort } from '../sorting-algorithms/bubble-sort';
+import { BubbleSort } from '../sorting-algorithms/BubbleSort';
 import { Subject } from 'rxjs';
 
 @Injectable({

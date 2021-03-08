@@ -3,8 +3,8 @@ import { SortingService } from '../../../services/sorting.service';
 import { Subscription } from 'rxjs';
 import { ArrayToBeSortedComponent } from '../array-to-be-sorted/array-to-be-sorted.component';
 import { ISortingStrategy } from '../../../models/ISortingStrategy';
-import { BubbleSort } from '../../../sorting-algorithms/bubble-sort';
-import { SelectionSort } from '../../../sorting-algorithms/selection-sort';
+import { BubbleSort } from '../../../sorting-algorithms/BubbleSort';
+import { SelectionSort } from '../../../sorting-algorithms/SelectionSort';
 import { HeapSort } from 'src/app/sorting-algorithms/HeapSort';
 
 @Component({
