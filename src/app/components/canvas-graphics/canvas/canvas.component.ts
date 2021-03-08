@@ -32,6 +32,11 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         color: [0, 50, 255]
       },
       {
+        center: [0, 0.2, 1.5],
+        radius: 0.2,
+        color: [0, 50, 255]
+      },
+      {
         center: [2, 0, 4],
         radius: 1,
         color: [0, 0, 255]
