@@ -17,7 +17,8 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   canvasHeight: number;
   scene: Scene = {
     canvasToViewportDistance: 1,
-    backgroundColor: [255, 255, 255],
+    backgroundColor: [0, 0, 0],
+    // backgroundColor: [255, 255, 255],
     viewportHeight: 1,
     viewportWidth: 1,
     spheres: [
@@ -25,36 +26,42 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         center: [0, -1, 3],
         radius: 1,
         shininess: 500, // shiny
+        reflectiveness: 0.2, // reflective
         color: [255, 0, 0]
       },
-      {
-        center: [0, 0.5, 1.5],
-        radius: 0.2,
-        shininess: 500, // shiny
-        color: [0, 50, 255]
-      },
-      {
-        center: [0, 0.2, 1.5],
-        radius: 0.2,
-        shininess: 1, // shiny
-        color: [0, 50, 255]
-      },
+      // {
+      //   center: [0, 0.5, 1.5],
+      //   radius: 0.2,
+      //   shininess: 500, // shiny
+      //   reflectiveness: 0.2, // reflective
+      //   color: [0, 50, 255]
+      // },
+      // {
+      //   center: [0, 0.2, 1.5],
+      //   radius: 0.2,
+      //   shininess: 1, // shiny
+      //   reflectiveness: 0.2, // reflective
+      //   color: [0, 50, 255]
+      // },
       {
         center: [2, 0, 4],
         radius: 1,
         shininess: 500, // shiny
+        reflectiveness: 0.3, // a bit more reflective
         color: [0, 0, 255]
       },
       {
         center: [-2, 0, 4],
         radius: 1,
         shininess: 10, // somewhat shiny
+        reflectiveness: 0.4, // even more reflective
         color: [0, 255, 0]
       },
       {
         center: [0, -5001, 0],
         radius: 5000,
         shininess: 1000, // very shiny
+        reflectiveness: 0.5, // half reflective
         color: [255, 255, 0]
       }
     ],
@@ -65,6 +72,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     ]
   };
   imageData: ImageData;
+  recursionDepth: number = 3; 
 
   constructor() { }
 
@@ -91,7 +99,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     for (let x = leftBorder; x <= rightBorder; x++) {
       for (let y = bottomBorder; y <= topBorder; y++) {
         const viewportPosition = this.calculateViewportPosition(x, y);
-        const pixelColor = this.traceRay(cameraPosition, viewportPosition, 1, Infinity);
+        const pixelColor = this.traceRay(cameraPosition, viewportPosition, 1, Infinity, this.recursionDepth);
 
         this.drawPixel(x, y, pixelColor);
       }
@@ -119,7 +127,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     ];
   }
 
-  traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number): [number, number, number] {
+  traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number, recursionDepth: number): [number, number, number] {
     const [closesetSphere, closesetIntersection] = this.closestIntersection(cameraPosition, viewportPosition, intersectionMin, intersectionMax);
     
     if (!closesetSphere) {
@@ -135,8 +143,18 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     const sphereNormal = sphereNormalDirection.map(el => el / sphereNormalDirectionLength);
 
     const lightingCoefficient = this.computeLighting(closesetIntersectionPoint, sphereNormal, viewportPosition.map(el => -el), closesetSphere.shininess);
+    
+    const localColor = closesetSphere.color.map(el => el * lightingCoefficient) as [number, number, number];
 
-    return closesetSphere.color.map(el => el * lightingCoefficient) as [number, number, number];
+    const reflectivness = closesetSphere.reflectiveness;
+    if (recursionDepth <= 0 || reflectivness <= 0) {
+      return localColor;
+    }
+    
+    const reflectionVector = this.reflectRay(viewportPosition.map(el => -el) as [number, number, number], sphereNormal);
+    const reflectedColor = this.traceRay(closesetIntersectionPoint, reflectionVector, 0.001, Infinity, recursionDepth - 1);
+
+    return this.vectorSum(localColor.map(el => el * (1 - reflectivness)), reflectedColor.map(el => el * reflectivness)) as [number, number, number];
   }
 
   closestIntersection(point: number[], rayDirection: number[], intersectionMin: number, intersectionMax: number): [Sphere, number] {
@@ -187,7 +205,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
         }
 
         if (shininess != -1) {
-          const reflectionVector = this.vectorSubtraction(normal.map(el => 2 * productNL * el), lightVector);
+          const reflectionVector = this.reflectRay(lightVector, normal);
           const product = this.vectorDotProduct(reflectionVector, cameraToObjectVector);
           if (product > 0) {
             lightIntensity += light.intensity * Math.pow(product / (this.vectorLength(reflectionVector) * this.vectorLength(cameraToObjectVector)), shininess);
@@ -197,6 +215,11 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     }
 
     return lightIntensity;
+  }
+
+  reflectRay(ray: [number, number, number], normal: number[]) {
+    const product = this.vectorDotProduct(normal, ray);
+    return this.vectorSubtraction(normal.map(el => 2 * product * el), ray);
   }
 
   calculateIntersections(cameraPosition: number[], viewportPosition: number[], sphere: any): [number, number] {
