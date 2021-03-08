@@ -36,7 +36,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       {
         center: [0, 0.2, 1.5],
         radius: 0.2,
-        shininess: 500, // shiny
+        shininess: 1, // shiny
         color: [0, 50, 255]
       },
       {
@@ -120,22 +120,8 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   }
 
   traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number): [number, number, number] {
-    let closesetIntersection = Infinity;
-    let closesetSphere: Sphere = null;
-
-    for (const sphere of this.scene.spheres) {
-      const [intersection1, intersection2] = this.calculateIntersections(cameraPosition, viewportPosition, sphere);
-      if (intersection1 >= intersectionMin && intersection1 <= intersectionMax 
-        && intersection1 < closesetIntersection) {
-        closesetIntersection = intersection1;
-        closesetSphere = sphere;
-      }
-      if (intersection2 >= intersectionMin && intersection2 <= intersectionMax 
-        && intersection2 < closesetIntersection) {
-        closesetIntersection = intersection2;
-        closesetSphere = sphere;
-      }
-    }
+    const [closesetSphere, closesetIntersection] = this.closestIntersection(cameraPosition, viewportPosition, intersectionMin, intersectionMax);
+    
     if (!closesetSphere) {
       return this.scene.backgroundColor;
     }
@@ -153,9 +139,29 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     return closesetSphere.color.map(el => el * lightingCoefficient) as [number, number, number];
   }
 
+  closestIntersection(point: number[], rayDirection: number[], intersectionMin: number, intersectionMax: number): [Sphere, number] {
+    let closesetIntersection = Infinity;
+    let closesetSphere: Sphere = null;
+    for (const sphere of this.scene.spheres) {
+      const [intersection1, intersection2] = this.calculateIntersections(point, rayDirection, sphere);
+      if (intersection1 >= intersectionMin && intersection1 <= intersectionMax 
+        && intersection1 < closesetIntersection) {
+        closesetIntersection = intersection1;
+        closesetSphere = sphere;
+      }
+      if (intersection2 >= intersectionMin && intersection2 <= intersectionMax 
+        && intersection2 < closesetIntersection) {
+        closesetIntersection = intersection2;
+        closesetSphere = sphere;
+      }
+    }
+    return [closesetSphere, closesetIntersection];
+  }
+
   computeLighting(point: number[], normal: number[], cameraToObjectVector: number[], shininess: number): number {
     let lightIntensity = 0;
     let lightVector: [number, number, number];
+    let intersectionMax = Infinity;
 
     for (const light of this.scene.lights) {
       if (light instanceof AmbientLight) {
@@ -163,9 +169,17 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       } else {
         if (light instanceof PointLight) {
           lightVector = this.vectorSubtraction(light.position, point);
+          intersectionMax = 1;
         } else if (light instanceof DirectionalLight) {
           lightVector = light.direction;
+          intersectionMax = Infinity;
         }
+
+        const [shadowSphere, shadowIntersection] = this.closestIntersection(point, lightVector, 0.001, intersectionMax);
+        if (shadowSphere) {
+          continue;
+        }
+
         const productNL = this.vectorDotProduct(normal, lightVector);
 
         if (productNL > 0) {
