@@ -1,5 +1,5 @@
 export class Heap<T> {
-  heapBody: T[];
+  private heapBody: T[];
 
   constructor(items: T[]) {
     this.heapBody = [null];
