@@ -1,8 +1,9 @@
+import { Color } from "./Color";
 import { Light } from "./lights/Light";
 import { Sphere } from "./Sphere";
 
 export interface Scene {
-  backgroundColor: [number, number, number],
+  backgroundColor: Color,
   canvasToViewportDistance: number,
   viewportWidth: number,
   viewportHeight: number,
