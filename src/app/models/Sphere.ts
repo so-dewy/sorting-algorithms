@@ -1,7 +1,10 @@
+import { Color } from "./Color";
+import { Vector } from "./vector";
+
 export interface Sphere {
-    center: [number, number, number],
+    center: Vector,
     radius: number,
     shininess: number,
     reflectiveness: number,
-    color: [number, number, number]
+    color: Color
 }

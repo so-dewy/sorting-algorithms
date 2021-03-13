@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Color } from '../models/Color';
 import { AmbientLight } from '../models/lights/AmbientLight';
 import { DirectionalLight } from '../models/lights/DirectionalLight';
 import { PointLight } from '../models/lights/PointLight';
 import { Scene } from '../models/Scene';
 import { Sphere } from '../models/Sphere';
+import { Vector } from '../models/vector';
 import { LinearAlgebraService } from './linear-algebra.service';
 
 @Injectable({
@@ -19,7 +21,7 @@ export class RaytracerService {
     this.scene = scene;
   }
 
-  calculateViewportPosition(x: number, y: number, canvasWidth: number, canvasHeight: number): number[] {
+  calculateViewportDirection(x: number, y: number, canvasWidth: number, canvasHeight: number): Vector {
     return [
       (x * this.scene.viewportWidth) / canvasWidth, 
       (y * this.scene.viewportHeight) / canvasHeight,
@@ -27,37 +29,37 @@ export class RaytracerService {
     ];
   }
 
-  traceRay(cameraPosition: number[], viewportPosition: number[], intersectionMin: number, intersectionMax: number, recursionDepth: number): [number, number, number] {
+  traceRay(cameraPosition: Vector, viewportPosition: Vector, intersectionMin: number, intersectionMax: number, recursionDepth: number): Color {
     const [closesetSphere, closesetIntersection] = this.closestIntersection(cameraPosition, viewportPosition, intersectionMin, intersectionMax);
     
     if (!closesetSphere) {
       return this.scene.backgroundColor;
     }
 
-    const closesetIntersectionPoint = this.linAlgSevice.vectorSum(cameraPosition, viewportPosition.map(el => el * closesetIntersection));
+    const closesetIntersectionPoint = this.linAlgSevice.vectorSum(cameraPosition, viewportPosition.map(el => el * closesetIntersection) as Vector);
 
     const sphereNormalDirection = this.linAlgSevice.vectorSubtraction(closesetIntersectionPoint, closesetSphere.center);
 
     const sphereNormalDirectionLength = this.linAlgSevice.vectorLength(sphereNormalDirection);
 
-    const sphereNormal = sphereNormalDirection.map(el => el / sphereNormalDirectionLength);
+    const sphereNormal = sphereNormalDirection.map(el => el / sphereNormalDirectionLength) as Vector;
 
-    const lightingCoefficient = this.computeLighting(closesetIntersectionPoint, sphereNormal, viewportPosition.map(el => -el), closesetSphere.shininess);
+    const lightingCoefficient = this.computeLighting(closesetIntersectionPoint, sphereNormal, viewportPosition.map(el => -el) as Vector, closesetSphere.shininess);
     
-    const localColor = closesetSphere.color.map(el => el * lightingCoefficient) as [number, number, number];
+    const localColor = closesetSphere.color.map(el => el * lightingCoefficient) as Color;
 
     const reflectivness = closesetSphere.reflectiveness;
     if (recursionDepth <= 0 || reflectivness <= 0) {
       return localColor;
     }
     
-    const reflectionVector = this.reflectRay(viewportPosition.map(el => -el) as [number, number, number], sphereNormal);
+    const reflectionVector = this.reflectRay(viewportPosition.map(el => -el) as Color, sphereNormal);
     const reflectedColor = this.traceRay(closesetIntersectionPoint, reflectionVector, 0.001, Infinity, recursionDepth - 1);
 
-    return this.linAlgSevice.vectorSum(localColor.map(el => el * (1 - reflectivness)), reflectedColor.map(el => el * reflectivness)) as [number, number, number];
+    return this.linAlgSevice.vectorSum(localColor.map(el => el * (1 - reflectivness)) as Vector, reflectedColor.map(el => el * reflectivness) as Vector);
   }
 
-  closestIntersection(point: number[], rayDirection: number[], intersectionMin: number, intersectionMax: number): [Sphere, number] {
+  closestIntersection(point: Vector, rayDirection: Vector, intersectionMin: number, intersectionMax: number): [Sphere, number] {
     let closesetIntersection = Infinity;
     let closesetSphere: Sphere = null;
     for (const sphere of this.scene.spheres) {
@@ -76,9 +78,9 @@ export class RaytracerService {
     return [closesetSphere, closesetIntersection];
   }
 
-  computeLighting(point: number[], normal: number[], cameraToObjectVector: number[], shininess: number): number {
+  computeLighting(point: Vector, normal: Vector, cameraToObjectVector: Vector, shininess: number): number {
     let lightIntensity = 0;
-    let lightVector: [number, number, number];
+    let lightVector: Vector;
     let intersectionMax = Infinity;
 
     for (const light of this.scene.lights) {
@@ -117,14 +119,14 @@ export class RaytracerService {
     return lightIntensity;
   }
 
-  reflectRay(ray: [number, number, number], normal: number[]) {
+  reflectRay(ray: Vector, normal: Vector) {
     const product = this.linAlgSevice.vectorDotProduct(normal, ray);
-    return this.linAlgSevice.vectorSubtraction(normal.map(el => 2 * product * el), ray);
+    return this.linAlgSevice.vectorSubtraction(normal.map(el => 2 * product * el) as Vector, ray);
   }
 
-  calculateIntersections(cameraPosition: number[], viewportPosition: number[], sphere: any): [number, number] {
+  calculateIntersections(cameraPosition: Vector, viewportPosition: Vector, sphere: any): [number, number] {
     const radius = sphere.radius;
-    const cameraToSphereVector = [
+    const cameraToSphereVector: Vector = [
       cameraPosition[0] - sphere.center[0],
       cameraPosition[1] - sphere.center[1],
       cameraPosition[2] - sphere.center[2],

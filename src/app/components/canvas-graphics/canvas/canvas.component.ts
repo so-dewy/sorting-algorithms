@@ -6,6 +6,8 @@ import { PointLight } from 'src/app/models/lights/PointLight';
 import { DirectionalLight } from 'src/app/models/lights/DirectionalLight';
 import { RaytracerService } from 'src/app/services/raytracer.service';
 import { LinearAlgebraService } from 'src/app/services/linear-algebra.service';
+import { Color } from 'src/app/models/Color';
+import { Vector } from 'src/app/models/vector';
 
 @Component({
   selector: 'app-canvas',
@@ -100,14 +102,14 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       [0, 1, 0],
       [0.7071, 0,  0.7071]
     ];
-    const cameraPosition = [3, 0, 1];
+    const cameraPosition: Vector = [3, 0, 1];
     const rightBorder = this.canvasWidth / 2;
     const leftBorder = -rightBorder;
     const topBorder = this.canvasHeight / 2;
     const bottomBorder = -topBorder;
     for (let x = leftBorder; x <= rightBorder; x++) {
       for (let y = bottomBorder; y <= topBorder; y++) {
-        const viewportPosition = this.linAlgSevice.multiplyMV(cameraRotation, this.raytracer.calculateViewportPosition(x, y, this.canvasWidth, this.canvasHeight));
+        const viewportPosition = this.linAlgSevice.multiplyMV(cameraRotation, this.raytracer.calculateViewportDirection(x, y, this.canvasWidth, this.canvasHeight));
         const pixelColor = this.raytracer.traceRay(cameraPosition, viewportPosition, 1, Infinity, this.recursionDepth);
 
         this.drawPixel(x, y, pixelColor);
@@ -116,7 +118,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
     this.ctx.putImageData(this.imageData, 0, 0);
   }
 
-  drawPixel(x: number, y: number, pixelColor: [number, number, number]) {
+  drawPixel(x: number, y: number, pixelColor: Color) {
     const screenX = x - this.canvasWidth / 2;
     const screenY = this.canvasWidth / 2 - y;
 
