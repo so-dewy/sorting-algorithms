@@ -13,6 +13,7 @@ import { SortingVisualisationComponent } from './components/sorting/sorting-visu
 import { MatButtonModule } from '@angular/material/button';
 import { CanvasComponent } from './components/canvas-graphics/canvas/canvas.component';
 import { MatSelectModule } from '@angular/material/select';
+import { RasterizerComponent } from './components/canvas-graphics/rasterizer/rasterizer.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
     ArrayToBeSortedComponent,
     NavigationHeaderComponent,
     SortingVisualisationComponent,
-    CanvasComponent
+    CanvasComponent,
+    RasterizerComponent
   ],
   imports: [
     BrowserModule,
