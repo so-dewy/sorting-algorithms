@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CanvasComponent } from './components/canvas-graphics/canvas/canvas.component';
 import { MatSelectModule } from '@angular/material/select';
 import { RasterizerComponent } from './components/canvas-graphics/rasterizer/rasterizer.component';
+import { RaytracerComponent } from './components/canvas-graphics/raytracer/raytracer.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { RasterizerComponent } from './components/canvas-graphics/rasterizer/ras
     NavigationHeaderComponent,
     SortingVisualisationComponent,
     CanvasComponent,
+    RaytracerComponent,
     RasterizerComponent
   ],
   imports: [
